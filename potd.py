@@ -1,17 +1,19 @@
 class Solution:
     def wifiRange(self, s, x):
         n = len(s)
-
-        # Array to track coverage
-        covered = [0] * n
+        last_covered = -1  # last room that is covered
 
         for i in range(n):
             if s[i] == '1':
-                left = max(0, i - x)
-                right = min(n - 1, i + x)
-                # Mark all rooms from left → right as covered
-                for j in range(left, right + 1):
-                    covered[j] = 1
+                left = i - x
+                right = i + x
 
-        # If any room is not covered, return False
-        return all(covered)
+                # If there exists an uncovered gap between last_covered+1 and left-1
+                if left > last_covered + 1:
+                    return False
+
+                # Extend coverage to right
+                last_covered = right
+
+        # After loop, ensure the last room is covered
+        return last_covered >= n - 1
